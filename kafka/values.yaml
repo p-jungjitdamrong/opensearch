@@ -13,11 +13,11 @@ spec:
     - broker
   resources:
     requests:
-      memory: "2Gi"
+      memory: "1Gi"
       cpu: "500m"
     limits:
-      memory: "4Gi"
-      cpu: "2000m"
+      memory: "1Gi"
+      cpu: "1000m"
   storage:
     type: jbod
     volumes:
