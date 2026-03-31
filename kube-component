@@ -10,6 +10,10 @@ helm upgrade --install cert-manager oci://quay.io/jetstack/charts/cert-manager \
   --set cainjector.nodeSelector.agentpool=infra
 
 # 1. istio-base (CRDs)
+# ติดตั้ง istioctl ก่อนถ้ายังไม่มี
+curl -sL https://istio.io/downloadIstio | ISTIO_VERSION=1.29.1 sh -
+export PATH=$PWD/istio-1.29.1/bin:$PATH
+
 helm upgrade --install istio-base istio/base \
   -n istio-system \
   --create-namespace
