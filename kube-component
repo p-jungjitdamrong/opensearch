@@ -40,6 +40,14 @@ helm upgrade --install strimzi-kafka-operator strimzi/strimzi-kafka-operator \
   --set nodeSelector.agentpool=infra \
   --set watchNamespaces={poc-cluster}
 
+# 6. AKHQ
+helm repo add akhq https://akhq.io/
+helm repo update
+helm upgrade --install akhq akhq/akhq \
+  -n poc-cluster \
+  --set ingress.enabled=false \
+  --set configuration.akhq.connections.poc-kafka.properties.bootstrap\.servers=poc-kafka-kafka-bootstrap:9092
+
 
 
 
