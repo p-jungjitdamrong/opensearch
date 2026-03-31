@@ -52,6 +52,8 @@ helm repo update
 #  --set ingress.enabled=false \
 #  --set configuration.akhq.connections.poc-kafka.properties.bootstrap\.servers=poc-kafka-kafka-bootstrap:9092 \
 #  --set configuration.micronaut.server.context-path=/akhq
+
+helm uninstall akhq -n poc-cluster
 helm upgrade --install akhq akhq/akhq \
   -n poc-cluster \
   -f akhq-values.yaml
