@@ -46,6 +46,9 @@ helm repo update
 helm upgrade --install akhq akhq/akhq \
   -n poc-cluster \
   --set ingress.enabled=false \
+  --set configuration.micronaut.server.context-path=/akhq \
+  --set livenessProbe.httpGet.path=/akhq/api/health \
+  --set readinessProbe.httpGet.path=/akhq/api/health \
   --set configuration.akhq.connections.poc-kafka.properties.bootstrap\.servers=poc-kafka-kafka-bootstrap:9092
 
 
