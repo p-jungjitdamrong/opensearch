@@ -1,5 +1,5 @@
 ## Install Component ##
-
+# 0. cert-manager
 helm upgrade --install cert-manager oci://quay.io/jetstack/charts/cert-manager \
   --version v1.20.0 \
   --namespace cert-manager \
@@ -8,3 +8,21 @@ helm upgrade --install cert-manager oci://quay.io/jetstack/charts/cert-manager \
   --set nodeSelector.agentpool=infra \
   --set webhook.nodeSelector.agentpool=infra \
   --set cainjector.nodeSelector.agentpool=infra
+
+# 1. istio-base (CRDs)
+helm upgrade --install istio-base istio/base \
+  -n istio-system \
+  --create-namespace
+
+# 2. istiod (control plane)
+helm upgrade --install istiod istio/istiod \
+  -n istio-system \
+  --set pilot.nodeSelector.agentpool=infra \
+  --wait
+
+# 3. istio-ingress (gateway)
+helm upgrade --install istio-ingress istio/gateway \
+  -n istio-system \
+  --set nodeSelector.agentpool=infra \
+  --set service.type=LoadBalancer \
+  --wait
