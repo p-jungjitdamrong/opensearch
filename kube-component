@@ -29,5 +29,5 @@ helm upgrade --install istio-ingress istio/gateway \
 
 # 4. Opensearch-Operator
 helm repo add opensearch-operator https://opensearch-project.github.io/opensearch-k8s-operator/
-helm upgrade --install opensearch-operator opensearch-operator/opensearch-operator -n opensearch-operator --create-namespace -f operator/values.yaml
+helm upgrade --install opensearch-operator opensearch-operator/opensearch-operator -n opensearch-operator --create-namespace -f operator/helm-values.yaml
 
