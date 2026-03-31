@@ -1,0 +1,91 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: poc-cluster-gateway
+  namespace: poc-cluster
+spec:
+  selector:
+    istio: ingress
+  servers:
+    - port:
+        number: 443
+        name: https-dashboards
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: poc-dashboards-tls   # ← ชื่อเดียวกับ secretName ใน Certificate
+      hosts:
+        - "*"
+
+    - port:
+        number: 9200
+        name: https-opensearch
+        protocol: HTTPS
+      tls:
+        mode: PASSTHROUGH
+      hosts:
+        - "*"
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: poc-cluster-vs
+  namespace: poc-cluster
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - poc-cluster-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /es
+    headers:
+      request:
+        remove:
+          - X-Request-Id        # ← ลบ header นี้ออก ให้ OpenSearch gen เอง
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: poc-cluster
+        port:
+          number: 9200
+  - match:
+    - uri:
+        prefix: /
+    headers:
+      request:
+        remove:
+          - X-Request-Id        # ← ลบ header นี้ออก ให้ OpenSearch gen เอง
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: poc-cluster-dashboards
+        port:
+          number: 5601
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: poc-cluster-dr
+  namespace: poc-cluster
+spec:
+  host: poc-cluster
+  trafficPolicy:
+    tls:
+      mode: SIMPLE        # Istio → OpenSearch เป็น HTTPS
+      insecureSkipVerify: true   # เพราะ OpenSearch ใช้ self-signed cert
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: poc-cluster-dashboards-dr
+  namespace: poc-cluster
+spec:
+  host: poc-cluster-dashboards
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+      insecureSkipVerify: true
