@@ -47,11 +47,14 @@ helm upgrade --install strimzi-kafka-operator strimzi/strimzi-kafka-operator \
 # 6. AKHQ
 helm repo add akhq https://akhq.io/
 helm repo update
+#helm upgrade --install akhq akhq/akhq \
+#  -n poc-cluster \
+#  --set ingress.enabled=false \
+#  --set configuration.akhq.connections.poc-kafka.properties.bootstrap\.servers=poc-kafka-kafka-bootstrap:9092 \
+#  --set configuration.micronaut.server.context-path=/akhq
 helm upgrade --install akhq akhq/akhq \
   -n poc-cluster \
-  --set ingress.enabled=false \
-  --set configuration.akhq.connections.poc-kafka.properties.bootstrap\.servers=poc-kafka-kafka-bootstrap:9092 \
-  --set configuration.micronaut.server.context-path=/akhq
+  -f akhq-values.yaml
 
 kubectl patch deployment akhq -n poc-cluster --type=json -p='[
   {
