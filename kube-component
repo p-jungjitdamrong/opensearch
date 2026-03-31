@@ -31,3 +31,11 @@ helm upgrade --install istio-ingress istio/gateway \
 helm repo add opensearch-operator https://opensearch-project.github.io/opensearch-k8s-operator/
 helm upgrade --install opensearch-operator opensearch-operator/opensearch-operator -n opensearch-operator --create-namespace -f operator/helm-values.yaml
 
+# 5. Strimzi-Operator
+helm repo add strimzi https://strimzi.io/charts/
+helm repo update
+helm upgrade --install strimzi-kafka-operator strimzi/strimzi-kafka-operator \
+  -n strimzi-system \
+  --create-namespace \
+  --set nodeSelector.agentpool=infra
+
