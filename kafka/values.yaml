@@ -1,5 +1,5 @@
 # kafkanodepool.yaml
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaNodePool
 metadata:
   name: dual-role
@@ -13,11 +13,11 @@ spec:
     - broker
   resources:
     requests:
-      memory: "1Gi"
-      cpu: "250m"
+      memory: "2Gi"
+      cpu: "500m"
     limits:
-      memory: "1Gi"
-      cpu: "1000m"
+      memory: "4Gi"
+      cpu: "2000m"
   storage:
     type: jbod
     volumes:
@@ -27,11 +27,18 @@ spec:
         deleteClaim: false
   template:
     pod:
-      nodeSelector:
-        agentpool: app01
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: agentpool
+                    operator: In
+                    values:
+                      - app01
 ---
 # kafka.yaml
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: Kafka
 metadata:
   name: poc-kafka
