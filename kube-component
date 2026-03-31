@@ -37,5 +37,9 @@ helm repo update
 helm upgrade --install strimzi-kafka-operator strimzi/strimzi-kafka-operator \
   -n strimzi-system \
   --create-namespace \
-  --set nodeSelector.agentpool=infra
+  --set nodeSelector.agentpool=infra \
+  --set watchNamespaces={poc-cluster}
+
+
+
 
