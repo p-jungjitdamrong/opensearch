@@ -44,6 +44,13 @@ spec:
       request:
         remove:
           - X-Request-Id        # ← ลบ header นี้ออก ให้ OpenSearch gen เอง
+    - uri:
+        prefix: /akhq
+    route:
+    - destination:
+        host: akhq
+        port:
+          number: 8080
     rewrite:
       uri: /
     route:
