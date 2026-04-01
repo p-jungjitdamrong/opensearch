@@ -86,8 +86,9 @@ kubectl patch deployment akhq -n poc-cluster --type=json -p='[
     }
   }
 ]'
-
+lFeGypqp68iiQe9FiQOJ8sQvJgQQLMMyjgoX0qSEn+AStViDStg==
 kubectl rollout status deployment/akhq -n poc-cluster
+7329+W930qAE9IXbWHvjzEqjVOPM1kroap+
 
 
 
