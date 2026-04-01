@@ -1,0 +1,247 @@
+#imagePullSecrets:
+#  - name: scb-harbor-registrykey
+
+image:
+  repository: scbseaacr001nonprod.azurecr.io/ap1994-centralizedelk/tchiotludo/akhq
+  tag: "0.26.0" # uses Chart.AppVersion by default
+# Number of old deployment ReplicaSets to retain. The rest will be garbage collected.
+revisionHistoryLimit: 1
+
+annotations: {}
+podAnnotations: {}
+configmapAnnotations: {}
+  # vault.security.banzaicloud.io/vault-role: akhq
+  # vault.security.banzaicloud.io/vault-serviceaccount: akhq
+
+# custom labels
+labels: {}
+  # custom.label: 'true'
+
+podLabels: {}
+
+extraEnv: []
+#  - name: JAVA_OPTS
+#    value: "-Djavax.net.ssl.trustStore=/opt/java/openjdk/lib/security/cacerts -Djavax.net.ssl.trustStorePassword=password"
+# - name: CLASSPATH
+#   value: "/any/additional/jars/desired.jar:/go/here.jar"
+
+## You can also use configmap for the configuration...
+configuration:
+  micronaut:
+    server:
+      port: 8080
+    security:
+      enabled: true
+      token:
+        jwt:
+          signatures:
+            secret:
+              generator:
+                secret: "2d41b8e142b6b4339b96ff88d1c462d61f4eafb64797ed76506fd0339515217d"
+  akhq:
+    server:
+      access-log:
+        enabled: true
+        name: org.akhq.log.access
+    customHttpResponseHeaders:
+      - name: "Content-Security-Policy"
+        value: "default-src 'self';"
+      - name: "Content-Security-Policy"
+        value: "script-src 'self' 'sha256-8MRcSA/0obaf+0ty4aHBYLw8yHUD7pG5ZuAe6h/jgeE=' 'sha256-gJJbEuYmJ8XKCDxko0yeA3kohpu8CjXhUGP67iBzkII=' 'sha256-OhIMElhi3dn7/J5RBkfiH9E3dXTFVA4BU0hqYTbrOl8=';"
+      - name: "Content-Security-Policy"
+        value: "style-src 'self' 'sha256-FwvOtgZ7bxcVaY5ak4eAM0Ullk2Ynq5iSZvlKgw932M=' 'sha256-gixU7LtMo8R4jqjOifcbHB/dd61eJUxZHCC6RXtUKOQ=' 'sha256-Dn0vMZLidJplZ4cSlBMg/F5aa7Vol9dBMHzBF4fGEtk=' 'sha256-sA0hymKbXmMTpnYi15KmDw4u6uRdLXqHyoYIaORFtjU=' 'sha256-pj9V2e6V+tHTbTuA1l5A4YkKnf+RLlV5+E8an9SA5D4=' 'sha256-DnjfEfMjygXpW+KOCmSS83GQLz9DzlfnL0GKP3el+aI=' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=';"
+      - name: "Content-Security-Policy"
+        value: "img-src 'self' data: ;"
+      - name: "X-Permitted-Cross-Domain-Policies"
+        value: "none"
+      - name: "X-Frame-Options"
+        value: "SAMEORIGIN"
+      - name: "Strict-Transport-Security"
+        value: "max-age=31536000"
+    pagination:
+      page-size: 25
+      threads: 16
+    avro-serializer:
+      json.serialization.inclusions:
+        - NON_NULL
+    topic:
+      retention: 7200000 # default retention period when creating topic
+      partition: 3 #  default number of partition when creating topic
+      replication: 3 # default number of replicas when creating topic
+      internal-regexps: # list of regexp to be considered as internal (internal topic can't be deleted or updated)
+        - "^.*_schemas$"
+        - "^.*connect-config$"
+        - "^.*connect-offsets$"
+        - "^.*connect-status$"
+        - "^.*__consumer_offsets$"
+        - "^.*trace$"
+        - "^.*dms_dial_test$"
+      stream-regexps: # list of regexp to be considered as internal stream topic
+        - "^.*-changelog$"
+        - "^.*-repartition$"
+        - "^.*-rekey$"
+      skip-consumer-groups: false
+      skip-last-record: false
+      show-all-consumer-groups: false
+      retry:
+        topic-exists: # Delay between retries when checking for existence of newly created topics. This is needed as it might take the kafka broker a few seconds to create new topics.
+          delay: "3s"
+    topic-data:
+      size: 50
+      poll-timeout: 1000
+      kafka-max-message-length: 1000000
+    ui-options:
+      topic:
+        default-view: HIDE_INTERNAL  # default list view (ALL, HIDE_INTERNAL, HIDE_INTERNAL_STREAM, HIDE_STREAM). Overrides default
+        skip-consumer-groups: false # Skip loading consumer group information when showing topics. Overrides default
+        skip-last-record: true  # Skip loading last record date information when showing topics.  Overrides default
+        show-all-consumer-groups: true # Expand list of consumer groups instead of showing one. Overrides default.
+      topic-data:
+        sort: NEWEST # default sort order (OLDEST, NEWEST) (default: OLDEST).  Overrides default
+
+##... and secret for connection information
+existingSecrets: ""
+# name of the existingSecret
+secrets: 
+  akhq:
+    security:
+      default-group: no-roles
+      basic-auth:
+      - username: admin
+        password: "6a336794f1c6a705da1eaedca40f645c954152cf45c67f347bb47e2e7765fa7f"
+        groups:
+        - admin
+      - username: ece
+        password: "ca4b2c3b4b0a22ff1608a4e39d25eafedf2523a9d86b69bc53b04359c93e8642"
+        groups:
+        - reader
+
+#Provide extra base64 encoded kubernetes secrets (keystore/truststore)
+#kafkaSecrets:
+#  truststore.jks: MIIIE...
+#  keystore.jks: MIIIE...
+
+# Any extra volumes to define for the pod (like keystore/truststore)
+extraVolumes:
+  - name: certstore-secret
+    secret:
+      secretName: diablo-cert
+      items:
+#        - key: "client.jks"
+#          path: "client.jks"
+        - key: "ca.crt"
+          path: "ca.crt"
+
+# Any extra volume mounts to define for the akhq container
+extraVolumeMounts:
+  - name: certstore-secret
+    mountPath: "/app/certs"
+    readOnly: true
+
+# Specify ServiceAccount for pod
+serviceAccountName: null
+serviceAccount:
+  create: false
+  #annotations:
+  #  eks.amazonaws.com/role-arn: arn:aws:iam::123456789000:role/iam-role-name-here
+
+# Add your own init container or uncomment and modify the example.
+initContainers: {}
+#   create-keystore:
+#     image: "eclipse-temurin:11-jre"
+#     command: ['sh', '-c', 'keytool']
+#     volumeMounts:
+#      - mountPath: /tmp
+#        name: certs
+
+# Configure the Pod Security Context
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+securityContext: {}
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Configure the Container Security Context
+# ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+containerSecurityContext: {}
+  # allowPrivilegeEscalation: false
+  # privileged: false
+  # capabilities:
+  #  drop:
+  #    - ALL
+  # runAsNonRoot: true
+  # runAsUser: 1001
+  # readOnlyRootFilesystem: true
+
+service:
+  enabled: true
+  type: NodePort
+  port: 8080
+  managementPort: 28081
+  #httpNodePort: 32551
+  #managementNodePort: 32552
+  labels: {}
+  loadBalancerIP: ""
+  annotations:
+    # cloud.google.com/load-balancer-type: "Internal"
+
+ingress:
+  enabled: false
+#  ingressClassName: "nginx"
+#  annotations:
+#    kubernetes.io/ingress.class: nginx
+#    kubernetes.io/tls-acme: "true"
+#  paths:
+#    - /
+#  pathType: "ImplementationSpecific"
+#  hosts:
+#    - akhq.se.scb.co.th
+#  tls:
+#    - hosts:
+#        - akhq.se.scb.co.th
+#      secretName: tls-secret
+
+### Readiness / Liveness probe config.
+### ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+readinessProbe:
+  enabled: true
+  prefix: "" # set same as `micronaut.server.context-path`
+  path: /health
+  port: management
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+  httpGetExtra: {}
+
+livenessProbe:
+  enabled: true
+  prefix: "" # set same as `micronaut.server.context-path`
+  path: /health
+  port: management
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+  httpGetExtra: {}
+
+resources:
+   limits:
+    cpu: 500m
+    memory: 512Mi
+   requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {} 
+#  role: infra
+
+tolerations: []
+
+affinity: {}
+
+networkPolicy:
+  enabled: false
+  ingressNamespace: nginx-ingress
+ 
