@@ -58,38 +58,14 @@ helm upgrade --install akhq akhq/akhq \
   -n poc-cluster \
   -f akhq-values.yaml
 
-kubectl patch deployment akhq -n poc-cluster --type=json -p='[
-  {
-    "op": "replace",
-    "path": "/spec/template/spec/containers/0/livenessProbe",
-    "value": {
-      "httpGet": {
-        "path": "/akhq/health",
-        "port": 28081
-      },
-      "initialDelaySeconds": 30,
-      "periodSeconds": 10,
-      "failureThreshold": 5
-    }
-  },
-  {
-    "op": "replace",
-    "path": "/spec/template/spec/containers/0/readinessProbe",
-    "value": {
-      "httpGet": {
-        "path": "/akhq/health",
-        "port": 28081
-      },
-      "initialDelaySeconds": 15,
-      "periodSeconds": 10,
-      "failureThreshold": 5
-    }
-  }
-]'
-lFeGypqp68iiQe9FiQOJ8sQvJgQQLMMyjgoX0qSEn+AStViDStg==
-kubectl rollout status deployment/akhq -n poc-cluster
-7329+W930qAE9IXbWHvjzEqjVOPM1kroap+
+# 7. Fluentbit
+helm repo add fluent https://fluent.github.io/helm-charts
+helm repo update
+helm upgrade --install fluent-bit fluent/fluent-bit \
+  -n poc-cluster \
+  -f fluentbit-values.yaml
 
+kubectl rollout status daemonset/fluent-bit -n poc-cluster
 
 
 
