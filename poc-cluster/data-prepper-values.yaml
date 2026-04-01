@@ -16,11 +16,10 @@ extraEnvs:
         name: opensearch-admin
         key: password
 
-config:
-  data-prepper-config.yaml: |
-    ssl: false
-
-  pipelines.yaml: |
+pipelineConfig:
+  demoPipeline: "false"
+  enabled: true
+  config:
     kafka-to-opensearch:
       source:
         kafka:
@@ -43,3 +42,7 @@ config:
               type: logs
               dataset: opensearch-operator
               namespace: poc
+
+config:
+  data-prepper-config.yaml: |
+    ssl: false
