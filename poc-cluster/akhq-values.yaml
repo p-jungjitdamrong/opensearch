@@ -116,12 +116,12 @@ secrets:
         groups:
         - admin
     connections:
-      KAFKA-CHAT:
+      KAFKA-POC:
         properties:
-          bootstrap.servers: "chat-kafka-bootstrap.elk-chat-uat.svc:9093"
-          security.protocol: "SSL"
-          ssl.truststore.type: "PEM"
-          ssl.truststore.location: "/app/certs/ca.crt"
+          bootstrap.servers: "poc-kafka-kafka-bootstrap:9092"
+#          security.protocol: "SSL"
+#          ssl.truststore.type: "PEM"
+#          ssl.truststore.location: "/app/certs/ca.crt"
 #Provide extra base64 encoded kubernetes secrets (keystore/truststore)
 #kafkaSecrets:
 #  truststore.jks: MIIIE...
@@ -139,10 +139,10 @@ secrets:
 #          path: "ca.crt"
 
 # Any extra volume mounts to define for the akhq container
-extraVolumeMounts:
-  - name: certstore-secret
-    mountPath: "/app/certs"
-    readOnly: true
+#extraVolumeMounts:
+#  - name: certstore-secret
+#    mountPath: "/app/certs"
+#    readOnly: true
 
 # Specify ServiceAccount for pod
 serviceAccountName: null
