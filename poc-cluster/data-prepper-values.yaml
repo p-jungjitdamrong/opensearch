@@ -1,0 +1,45 @@
+# data-prepper-values.yaml
+replicaCount: 1
+
+nodeSelector:
+  agentpool: app01
+
+extraEnvs:
+  - name: OPENSEARCH_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: opensearch-admin
+        key: username
+  - name: OPENSEARCH_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: opensearch-admin
+        key: password
+
+config:
+  data-prepper-config.yaml: |
+    ssl: false
+
+  pipelines.yaml: |
+    kafka-to-opensearch:
+      source:
+        kafka:
+          bootstrap_servers:
+            - poc-kafka-kafka-bootstrap:9092
+          topics:
+            - name: poc-opensearch-operator-logs
+              group_id: data-prepper-consumer
+      processor:
+        - parse_json:
+      sink:
+        - opensearch:
+            hosts:
+              - "https://poc-cluster:9200"
+            username: "${OPENSEARCH_USERNAME}"
+            password: "${OPENSEARCH_PASSWORD}"
+            insecure: true
+            action: create
+            data_stream:
+              type: logs
+              dataset: opensearch-operator
+              namespace: poc
