@@ -10,7 +10,15 @@ spec:
     httpPort: 9200
     vendor: opensearch
     drainDataNodes: true
-
+    pluginsList:
+      - "repository-azure"
+      - "repository-s3"
+    keystore:
+      - secret:
+          name: opensearch-azure-credentials
+        keyMappings:
+          azure.client.default.account: azure.client.default.account
+          azure.client.default.key: azure.client.default.key
   security:
     config:
       adminCredentialsSecret:
@@ -50,9 +58,32 @@ spec:
       jvm: "-Xmx1024m -Xms1024m"
 #      persistence:
 #        storageClass: "standard"
-
+       additionalInitContainers:
+        - name: keystore-setup
+          image: opensearchproject/opensearch:3.5.0
+          command:
+            - bash
+            - -c
+            - |
+              bin/opensearch-keystore create -p || true
+              cat /azure-creds/azure.client.default.account | \
+                bin/opensearch-keystore add --stdin --force azure.client.default.account
+              cat /azure-creds/azure.client.default.key | \
+                bin/opensearch-keystore add --stdin --force azure.client.default.key
+              cp config/opensearch.keystore /keystore-volume/opensearch.keystore
+          volumeMounts:
+            - name: azure-creds
+              mountPath: /azure-creds
+            - name: keystore-volume
+              mountPath: /keystore-volume
+        additionalVolumes:
+        - name: keystore-volume
+          emptyDir: {}
+          path: /usr/share/opensearch/config
+          restartPods: false
+          
     - component: data
-      replicas: 2
+      replicas: 3
       diskSize: "50Gi"
       roles:
         - "data"
@@ -67,3 +98,26 @@ spec:
       jvm: "-Xmx2048m -Xms2048m"
 #      persistence:
 #        storageClass: "standard"
+      additionalInitContainers:
+        - name: keystore-setup
+          image: opensearchproject/opensearch:3.5.0
+          command:
+            - bash
+            - -c
+            - |
+              bin/opensearch-keystore create -p || true
+              cat /azure-creds/azure.client.default.account | \
+                bin/opensearch-keystore add --stdin --force azure.client.default.account
+              cat /azure-creds/azure.client.default.key | \
+                bin/opensearch-keystore add --stdin --force azure.client.default.key
+              cp config/opensearch.keystore /keystore-volume/opensearch.keystore
+          volumeMounts:
+            - name: azure-creds
+              mountPath: /azure-creds
+            - name: keystore-volume
+              mountPath: /keystore-volume
+      additionalVolumes:
+        - name: keystore-volume
+          emptyDir: {}
+          path: /usr/share/opensearch/config
+          restartPods: false
