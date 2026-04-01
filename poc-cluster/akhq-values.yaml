@@ -211,7 +211,7 @@ ingress:
 readinessProbe:
   enabled: true
   prefix: "" # set same as `micronaut.server.context-path`
-  path: /health
+  path: /akhq/health
   port: management
   initialDelaySeconds: 30
   periodSeconds: 10
@@ -223,7 +223,7 @@ readinessProbe:
 livenessProbe:
   enabled: true
   prefix: "" # set same as `micronaut.server.context-path`
-  path: /health
+  path: /akhq/health
   port: management
   initialDelaySeconds: 30
   periodSeconds: 10
