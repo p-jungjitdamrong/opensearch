@@ -1,1 +1,4 @@
 https://default45202dee40884e8c8ebdc01f56740e.8f.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/362f617fdcbf4dd1bf9d7757df079d74/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=FRTRxws_tI-snqdJL2Y8ts5hSi7J1UHalV55tYL0wHo
+DefaultEndpointsProtocol=https;AccountName=pocpatchsta001;AccountKey=;EndpointSuffix=core.windows.net
+
+snapshot
