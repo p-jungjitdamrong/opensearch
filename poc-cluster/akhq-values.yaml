@@ -1,9 +1,9 @@
 #imagePullSecrets:
 #  - name: scb-harbor-registrykey
 
-image:
-  repository: scbseaacr001nonprod.azurecr.io/ap1994-centralizedelk/tchiotludo/akhq
-  tag: "0.26.0" # uses Chart.AppVersion by default
+#image:
+#  repository: scbseaacr001nonprod.azurecr.io/ap1994-centralizedelk/tchiotludo/akhq
+#  tag: "0.26.0" # uses Chart.AppVersion by default
 # Number of old deployment ReplicaSets to retain. The rest will be garbage collected.
 revisionHistoryLimit: 1
 
@@ -111,26 +111,21 @@ secrets:
         password: "6a336794f1c6a705da1eaedca40f645c954152cf45c67f347bb47e2e7765fa7f"
         groups:
         - admin
-      - username: ece
-        password: "ca4b2c3b4b0a22ff1608a4e39d25eafedf2523a9d86b69bc53b04359c93e8642"
-        groups:
-        - reader
-
 #Provide extra base64 encoded kubernetes secrets (keystore/truststore)
 #kafkaSecrets:
 #  truststore.jks: MIIIE...
 #  keystore.jks: MIIIE...
 
 # Any extra volumes to define for the pod (like keystore/truststore)
-extraVolumes:
-  - name: certstore-secret
-    secret:
-      secretName: diablo-cert
-      items:
+#extraVolumes:
+#  - name: certstore-secret
+#    secret:
+#      secretName: diablo-cert
+#      items:
 #        - key: "client.jks"
 #          path: "client.jks"
-        - key: "ca.crt"
-          path: "ca.crt"
+#        - key: "ca.crt"
+#          path: "ca.crt"
 
 # Any extra volume mounts to define for the akhq container
 extraVolumeMounts:
@@ -241,7 +236,7 @@ tolerations: []
 
 affinity: {}
 
-networkPolicy:
-  enabled: false
-  ingressNamespace: nginx-ingress
+#networkPolicy:
+#  enabled: false
+#  ingressNamespace: nginx-ingress
  
