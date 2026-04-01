@@ -102,6 +102,10 @@ configuration:
 ##... and secret for connection information
 existingSecrets: ""
 # name of the existingSecret
+extraEnv: 
+  - name: JAVA_OPTS
+    value: "-Djava.io.tmpdir=/app"
+
 secrets: 
   akhq:
     security:
@@ -111,6 +115,13 @@ secrets:
         password: "6a336794f1c6a705da1eaedca40f645c954152cf45c67f347bb47e2e7765fa7f"
         groups:
         - admin
+    connections:
+      KAFKA-CHAT:
+        properties:
+          bootstrap.servers: "chat-kafka-bootstrap.elk-chat-uat.svc:9093"
+          security.protocol: "SSL"
+          ssl.truststore.type: "PEM"
+          ssl.truststore.location: "/app/certs/ca.crt"
 #Provide extra base64 encoded kubernetes secrets (keystore/truststore)
 #kafkaSecrets:
 #  truststore.jks: MIIIE...
