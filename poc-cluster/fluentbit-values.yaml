@@ -6,7 +6,7 @@ daemonSetVolumes:
       type: Directory
   - name: varlibdockercontainers
     hostPath:
-      path: /var/lib/docker/containers
+      path: /var/log/pods  #/var/lib/docker/containers
       type: Directory
 
 daemonSetVolumeMounts:
@@ -14,20 +14,19 @@ daemonSetVolumeMounts:
     mountPath: /var/log
     readOnly: true
   - name: varlibdockercontainers
-    mountPath: /var/lib/docker/containers
+    mountPath: /var/log/pods  #/var/lib/docker/containers
     readOnly: true
 
 nodeSelector:
   agentpool: infra
-
 config:
   inputs: |
     [INPUT]
         Name tail
         Tag opensearch-operator.*
-        Path /var/log/containers/*opensearch-operator*.log
-        Parser docker
-        DB /var/log/flb_opensearch_operator.db
+        Path /var/log/pods/opensearch-operator_*/*/*.log
+        Parser cri
+        DB /tmp/flb_opensearch_operator.db
         Mem_Buf_Limit 5MB
         Skip_Long_Lines On
 
