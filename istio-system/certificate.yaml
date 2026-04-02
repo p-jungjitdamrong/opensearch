@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: poc-tls
+  namespace: istio-system
+spec:
+  secretName: poc-tls
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+  commonName: "openpoc.dpdns.org"
+  dnsNames:
+    - "openpoc.dpdns.org"
+    - "*.openpoc.dpdns.org"
+  duration: 8760h
+  renewBefore: 720h
