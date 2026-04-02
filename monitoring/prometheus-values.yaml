@@ -1,0 +1,27 @@
+# prometheus-values.yaml
+nodeSelector:
+  agentpool: infra
+
+prometheus:
+  prometheusSpec:
+    nodeSelector:
+      agentpool: infra
+    routePrefix: /prometheus
+    externalUrl: "https://20.198.199.221/prometheus"
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorNamespaceSelector:
+      matchLabels:
+        monitoring: "true"
+
+grafana:
+  nodeSelector:
+    agentpool: infra
+  grafana.ini:
+    server:
+      root_url: "https://20.198.199.221/grafana"
+      serve_from_sub_path: true
+
+alertmanager:
+  alertmanagerSpec:
+    nodeSelector:
+      agentpool: infra
