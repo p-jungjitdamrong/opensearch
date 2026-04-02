@@ -1,0 +1,48 @@
+# signoz-values.yaml
+global:
+  cloud: azure
+  clusterName: poc-cluster
+
+clickhouse:
+  enabled: true
+  nodeSelector:
+    agentpool: infra
+  zookeeper:
+    enabled: true
+    nodeSelector:
+      agentpool: infra
+    replicaCount: 1          # POC ใช้ 1 พอ
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "500m"
+    limits:
+      memory: "4Gi"
+      cpu: "2000m"
+
+frontend:
+  nodeSelector:
+    agentpool: infra
+
+queryService:
+  nodeSelector:
+    agentpool: infra
+
+alertManager:
+  nodeSelector:
+    agentpool: infra
+
+otelCollector:
+  nodeSelector:
+    agentpool: infra
+
+otelCollectorMetrics:
+  nodeSelector:
+    agentpool: infra
