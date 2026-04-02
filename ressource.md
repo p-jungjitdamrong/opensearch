@@ -2,3 +2,7 @@ https://default45202dee40884e8c8ebdc01f56740e.8f.environment.api.powerplatform.c
 DefaultEndpointsProtocol=https;AccountName=pocpatchsta001;AccountKey=;EndpointSuffix=core.windows.net
 
 snapshot
+
+
+cfat_3imfWVjqk0FFmRpScbjedvJUq3RsDsUV0nfis1FQ8d4017b5
+
