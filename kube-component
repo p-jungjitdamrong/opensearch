@@ -84,8 +84,7 @@ helm upgrade --install kube-prometheus-stack \
   --set grafana."grafana\.ini".server.serve_from_sub_path=true \
   --set prometheus.prometheusSpec.routePrefix=/prometheus \
   --set prometheus.prometheusSpec.externalUrl="https://20.198.199.221/prometheus" \
-  --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
-  --set prometheus.prometheusSpec.kubectl label namespace poc-cluster monitoring=true
+  --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
 
 # label namespace for prometheus scrape by namespace lable
 kubectl label namespace poc-cluster monitoring=true
