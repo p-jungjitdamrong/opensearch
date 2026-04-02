@@ -27,22 +27,22 @@ clickhouse:
       memory: "4Gi"
       cpu: "2000m"
 
-frontend:
-  nodeSelector:
-    agentpool: infra
+#frontend:
+#  nodeSelector:
+#    agentpool: infra
 
-queryService:
-  nodeSelector:
-    agentpool: infra
+#queryService:
+#  nodeSelector:
+#    agentpool: infra
 
-alertManager:
-  nodeSelector:
-    agentpool: infra
+#alertManager:
+#  nodeSelector:
+#    agentpool: infra
 
-otelCollector:
-  nodeSelector:
-    agentpool: infra
+#otelCollector:
+#  nodeSelector:
+#    agentpool: infra
 
-otelCollectorMetrics:
-  nodeSelector:
-    agentpool: infra
+#otelCollectorMetrics:
+#  nodeSelector:
+#    agentpool: infra
