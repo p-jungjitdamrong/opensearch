@@ -76,10 +76,19 @@ helm repo update
 helm upgrade --install kube-prometheus-stack \
   prometheus-community/kube-prometheus-stack \
   -n monitoring \
-  --create-namespace \
   --set nodeSelector.agentpool=infra \
   --set prometheus.prometheusSpec.nodeSelector.agentpool=infra \
   --set grafana.nodeSelector.agentpool=infra \
-  --set alertmanager.alertmanagerSpec.nodeSelector.agentpool=infra
+  --set alertmanager.alertmanagerSpec.nodeSelector.agentpool=infra \
+  --set grafana."grafana\.ini".server.root_url="https://20.198.199.221/grafana" \
+  --set grafana."grafana\.ini".server.serve_from_sub_path=true \
+  --set prometheus.prometheusSpec.routePrefix=/prometheus \
+  --set prometheus.prometheusSpec.externalUrl="https://20.198.199.221/prometheus" \
+  --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
+  --set prometheus.prometheusSpec.kubectl label namespace poc-cluster monitoring=true
+
+# label namespace for prometheus scrape by namespace lable
+kubectl label namespace poc-cluster monitoring=true
+kubectl get namespace poc-cluster --show-labels
 
 
