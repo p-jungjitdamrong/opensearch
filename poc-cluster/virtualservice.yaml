@@ -1,0 +1,55 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: opensearch-vs
+  namespace: poc-cluster
+spec:
+  hosts:
+    - "openpoc.dpdns.org"
+  gateways:
+    - istio-system/poc-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /es
+      headers:
+        request:
+          remove:
+            - X-Request-Id
+      rewrite:
+        uri: /
+      route:
+        - destination:
+            host: poc-cluster
+            port:
+              number: 9200
+
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: poc-cluster-dashboards
+            port:
+              number: 5601
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: akhq-vs
+  namespace: poc-cluster
+spec:
+  hosts:
+    - "kafka.openpoc.dpdns.org"
+  gateways:
+    - istio-system/poc-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /akhq
+      route:
+        - destination:
+            host: akhq
+            port:
+              number: 80
+EOF
