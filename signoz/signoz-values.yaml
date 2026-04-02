@@ -5,12 +5,12 @@ global:
 
 clickhouse:
   enabled: true
-  nodeSelector:
-    agentpool: infra
+#  nodeSelector:
+#    agentpool: infra
   zookeeper:
     enabled: true
-    nodeSelector:
-      agentpool: infra
+#    nodeSelector:
+#      agentpool: infra
     replicaCount: 1          # POC ใช้ 1 พอ
     resources:
       requests:
