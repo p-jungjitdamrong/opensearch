@@ -68,8 +68,6 @@ helm upgrade --install fluent-bit fluent/fluent-bit \
 kubectl rollout status daemonset/fluent-bit -n poc-cluster
 
 
-
-
 # 7. Prometheus
 helm repo add prometheus-community \
   https://prometheus-community.github.io/helm-charts
@@ -85,3 +83,14 @@ kubectl get namespace poc-cluster --show-labels
 
 https://grafana.com/grafana/dashboards/23029-opensearch/
 
+
+# 8. Signoz
+helm repo add signoz https://charts.signoz.io
+helm repo update
+helm show values signoz/signoz | head -80
+
+helm upgrade --install signoz signoz/signoz \
+  -n signoz \
+  --create-namespace \
+  -f signoz-values.yaml
+kubectl get pods -n signoz -w
