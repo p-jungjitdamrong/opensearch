@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: poc-gateway
+  namespace: istio-system
+spec:
+  selector:
+    istio: ingress
+  servers:
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: poc-tls
+      hosts:
+        - "openpoc.dpdns.org"
+        - "*.openpoc.dpdns.org"
+
+    - port:
+        number: 9200
+        name: https-opensearch
+        protocol: HTTPS
+      tls:
+        mode: PASSTHROUGH
+      hosts:
+        - "openpoc.dpdns.org"
+
+    - port:
+        number: 8080
+        name: http-signoz
+        protocol: HTTP
+      hosts:
+        - "signoz.openpoc.dpdns.org"
