@@ -22,10 +22,10 @@ clickhouse:
   resources:
     requests:
       memory: "2Gi"
-      cpu: "500m"
+      cpu: "250m"
     limits:
       memory: "4Gi"
-      cpu: "2000m"
+      cpu: "500m"
 
 #frontend:
 #  nodeSelector:
