@@ -68,4 +68,18 @@ helm upgrade --install fluent-bit fluent/fluent-bit \
 kubectl rollout status daemonset/fluent-bit -n poc-cluster
 
 
+helm repo add prometheus-community \
+  https://prometheus-community.github.io/helm-charts
+helm repo update
+
+# 7. Prometheus
+helm upgrade --install kube-prometheus-stack \
+  prometheus-community/kube-prometheus-stack \
+  -n monitoring \
+  --create-namespace \
+  --set nodeSelector.agentpool=infra \
+  --set prometheus.prometheusSpec.nodeSelector.agentpool=infra \
+  --set grafana.nodeSelector.agentpool=infra \
+  --set alertmanager.alertmanagerSpec.nodeSelector.agentpool=infra
+
 
