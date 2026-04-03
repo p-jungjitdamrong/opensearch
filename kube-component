@@ -67,6 +67,9 @@ helm upgrade --install fluent-bit fluent/fluent-bit \
 
 kubectl rollout status daemonset/fluent-bit -n poc-cluster
 
+helm upgrade --install data-prepper opensearch/data-prepper \
+  -n poc-cluster \
+  -f data-prepper-values.yaml
 
 # 7. Prometheus
 helm repo add prometheus-community \
