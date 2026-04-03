@@ -94,3 +94,7 @@ helm upgrade --install signoz signoz/signoz \
   --create-namespace \
   -f signoz-values.yaml
 kubectl get pods -n signoz -w
+
+
+
+CLIENT_ID = "a4e00bf4-c1c7-4d6e-a5a6-7d9e5e066931"
