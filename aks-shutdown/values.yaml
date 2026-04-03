@@ -11,7 +11,7 @@ metadata:
   name: aks-shutdown-sa
   namespace: aks-shutdown
   annotations:
-    azure.workload.identity/client-id: "<CLIENT_ID>"
+    azure.workload.identity/client-id: "a4e00bf4-c1c7-4d6e-a5a6-7d9e5e066931"
 ---
 # aks-shutdown/secret.yaml
 apiVersion: v1
@@ -22,7 +22,7 @@ metadata:
 type: Opaque
 stringData:
   tenant-id: "45202dee-4088-4e8c-8ebd-c01f56740e8f"
-  client-id: "<CLIENT_ID>"
+  client-id: "a4e00bf4-c1c7-4d6e-a5a6-7d9e5e066931"
 ---
 # aks-shutdown/cronjob.yaml
 apiVersion: batch/v1
