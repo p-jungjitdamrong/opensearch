@@ -1,0 +1,76 @@
+# aks-shutdown/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: aks-shutdown
+---
+# aks-shutdown/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: aks-shutdown-sa
+  namespace: aks-shutdown
+  annotations:
+    azure.workload.identity/client-id: "<CLIENT_ID>"
+---
+# aks-shutdown/secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aks-shutdown-secret
+  namespace: aks-shutdown
+type: Opaque
+stringData:
+  tenant-id: "45202dee-4088-4e8c-8ebd-c01f56740e8f"
+  client-id: "<CLIENT_ID>"
+---
+# aks-shutdown/cronjob.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: aks-shutdown
+  namespace: aks-shutdown
+spec:
+  schedule: "0 12 * * *"        # 19:00 Bangkok = 12:00 UTC
+  #timeZone: "Asia/Bangkok"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            azure.workload.identity/use: "true"
+        spec:
+          serviceAccountName: aks-shutdown-sa
+          restartPolicy: OnFailure
+          containers:
+            - name: az-cli
+              image: mcr.microsoft.com/azure-cli:latest
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  az login \
+                    --federated-token "$(cat $AZURE_FEDERATED_TOKEN_FILE)" \
+                    --service-principal \
+                    -u $AZURE_CLIENT_ID \
+                    --tenant $AZURE_TENANT_ID
+
+                  echo "Stopping AKS cluster poc-patch-aks..."
+
+                  az aks stop \
+                    --resource-group RG-SEA-POC-PATCH-01 \
+                    --name poc-patch-aks \
+                    --no-wait
+
+                  echo "Done!"
+              env:
+                - name: AZURE_TENANT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: aks-shutdown-secret
+                      key: tenant-id
+                - name: AZURE_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: aks-shutdown-secret
+                      key: client-id
